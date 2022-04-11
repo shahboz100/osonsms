@@ -1,8 +1,8 @@
 {
   "name": "shahboz100/osonsms",
-  "type": "symfony-bundle",
+  "type": "library",
   "description": "Библиотека отправки СМС с помощью сервиса osonsms.com",
-  "minimum-stability": "stable",
+  "minimum-stability": "dev",
   "license": "MIT",
   "authors": [
     {
@@ -10,35 +10,14 @@
       "email": "shahboz.100@yandex.ru"
     }
   ],
-  "keywords": [
-    "symfony",
-    "bundle"
-  ],
+  "keywords": [],
   "require": {
-    "php": "^7.1.3",
+    "php": ">=7.1.3",
     "symfony/http-kernel": "^4.4 || ^5.0"
-  },
-  "scripts": {
-    "csfix": "phpcbf",
-    "cscheck": "phpcs --report-full=php-codesniffer-report.log --runtime-set ignore_warnings_on_exit 1 --runtime-set ignore_errors_on_exit 1",
-    "cs": "phpcs --runtime-set ignore_warnings_on_exit 1 --runtime-set ignore_errors_on_exit 1",
-    "unit": "phpunit"
-  },
-  "config": {
-    "preferred-install": {
-      "*": "dist"
-    },
-    "secure-http": false,
-    "sort-packages": true
   },
   "autoload": {
     "psr-4": {
-      "Osonsms\\": "src/"
-    }
-  },
-  "autoload-dev": {
-    "psr-4": {
-      "Osonsms\\": "tests/"
+      "Osonsms\\": ""
     }
   }
 }

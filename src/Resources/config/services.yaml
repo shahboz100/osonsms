@@ -1,5 +1,0 @@
-services:
-  # Сервис для отправки уведомлений
-  Osonsms\Service\SendService:
-    arguments: [ '@service_container' ]
-    public: true

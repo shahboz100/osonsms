@@ -11,7 +11,7 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 use Symfony\Component\DependencyInjection\Loader;
 
-class OsonSmsExtension extends Extension
+class OsonsmsExtension extends Extension
 {
 
     public function load(array $configs, ContainerBuilder $container)

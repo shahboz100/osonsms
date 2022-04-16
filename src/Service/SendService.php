@@ -107,12 +107,12 @@ class SendService
     /**
      * Метод возвращает актуальный баланс на счете
      * @param $txnId
-     * @return int
+     * @return float
      * @throws ClientExceptionInterface
      * @throws RedirectionExceptionInterface
      * @throws ServerExceptionInterface
      */
-    public function getBalance($txnId): int
+    public function getBalance($txnId): float
     {
         $strHash = $this->getHash($txnId);
         try {
@@ -126,10 +126,10 @@ class SendService
             ]);
 
             switch ($response->getStatusCode()) {
-                case Response::HTTP_CREATED:
+                case Response::HTTP_OK:
                     $result = json_decode($response->getContent());
-                    if (isset($result['balance'])) {
-                        return $result['balance'];
+                    if (isset($result->balance)) {
+                        return $result->balance;
                     }
                     break;
                 case Response::HTTP_INTERNAL_SERVER_ERROR:

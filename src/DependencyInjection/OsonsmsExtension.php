@@ -13,21 +13,20 @@ use Symfony\Component\DependencyInjection\Loader;
 
 class OsonsmsExtension extends Extension
 {
-
     public function load(array $configs, ContainerBuilder $container)
     {
+        $configuration = new Configuration();
+        $config = $this->processConfiguration($configuration, $configs);
+
         $loader = new Loader\YamlFileLoader(
             $container,
             new FileLocator(__DIR__ . '/../Resources/config')
         );
         $loader->load('services.yaml');
 
-        $configuration = new Configuration();
-
-        $config = $this->processConfiguration($configuration, $configs);
-
         $container->setParameter('osonsms.hash', $config['hash']);
         $container->setParameter('osonsms.from', $config['from']);
         $container->setParameter('osonsms.login', $config['login']);
+        $container->setParameter('osonsms.baseUrl', $config['baseUrl']);
     }
 }

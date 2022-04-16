@@ -6,6 +6,9 @@ declare(strict_types=1);
 namespace Osonsms\Service;
 
 
+use Exception;
+use Osonsms\Entity\Error;
+use Osonsms\Entity\SendResult;
 use Psr\Container\ContainerInterface;
 use Symfony\Component\HttpClient\HttpClient;
 use Symfony\Component\HttpFoundation\Response;
@@ -33,6 +36,8 @@ class SendService
      * @param string $phone
      * @param string $msg
      * @param $txnId
+     * @return Error|SendResult
+     * @throws Exception
      */
     public function send(string $phone, string $msg, $txnId)
     {
@@ -49,21 +54,43 @@ class SendService
                 ]
             ]);
 
-            switch ($response->getStatusCode()) {
-                case Response::HTTP_CREATED:
-                    //TODO: Обработка ответа 201
-                    break;
-                case Response::HTTP_BAD_REQUEST:
-                    //TODO: Обработка ошибки 400
-                    break;
-                case Response::HTTP_INTERNAL_SERVER_ERROR:
-                    //TODO: Обработка ошибки 500
-                    break;
-                default:
-                    //TODO: Обработка ошибки в иных случаях
-            }
-        } catch (TransportExceptionInterface $e) {
-            //TODO: Обработка ошибки вызова
+            $result = json_decode($response->getContent());
+            return $this->getObject($result);
+
+        } catch (TransportExceptionInterface|ClientExceptionInterface|RedirectionExceptionInterface|ServerExceptionInterface $e) {
+            throw new \Exception('Ошибка при отправке сообщения!');
+        }
+    }
+
+    protected function getObject($request)
+    {
+        if (isset($request->error)) {
+            $error = new Error();
+            $error->setCode($request->error->code);
+            $error->setErrorType($request->error->error_type);
+            $error->setMsg($request->error->msg);
+            $error->setTimestamp($request->error->timestamp);
+
+            return $error;
+        } elseif (isset($request->status)) {
+            $sendResult = new SendResult();
+            $sendResult->setStatus($request->status);
+            $sendResult->setTimestamp($request->timestamp);
+            $sendResult->setTxnId($request->txn_id);
+            $sendResult->setMsgId($request->msg_id);
+            $sendResult->setSmscMsgId($request->smsc_msg_id);
+            $sendResult->setSmscMsgStatus($request->smsc_msg_status);
+            $sendResult->setSmscMsgParts($request->smsc_msg_parts);
+
+            return $sendResult;
+        } else {
+            $error = new Error();
+            $error->setCode(-1);
+            $error->setErrorType('fatal');
+            $error->setMsg('Неизвестная ошибка!');
+            $error->setTimestamp((string)time());
+
+            return $error;
         }
     }
 
